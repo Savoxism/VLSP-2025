@@ -1,0 +1,9 @@
+Participants will develop language models specialized for Vietnamese legal domain that can handle three core evaluation tasks:
+
+Legal Citation Usefulness: Determining whether a legal citation is useful for answering a specific legal question (True/False classification)
+Multiple-Choice Legal QA: Testing comprehensive Vietnamese legal knowledge through multiple-choice questions
+Free-Text Legal QA: Generating accurate and coherent narrative answers to Vietnamese legal questionsπ
+---
+
+You should prepare your knowledge base in the reference directory. Here, we provide a sample knowledge base with two legal documents. And the seed problem set shoud be provided in seed.json. Finally, you can sequentially run the three components to generate the final data.
+
