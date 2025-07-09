@@ -1,9 +1,11 @@
-import os, json, random
+import os, json, random, re
 from dotenv import load_dotenv
-from openai import OpenAI
+from google import genai
+from google.genai import types
 
 load_dotenv()
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 PROMPT = """
 Bạn là chuyên gia pháp luật. Tôi sẽ đưa cho bạn:  
@@ -22,7 +24,7 @@ Bạn là chuyên gia pháp luật. Tôi sẽ đưa cho bạn:
 - Nội dụng `question` & `answer` phải đa dạng và khác biệt so với mẫu
 - Trường `references` BẮT BUỘC trích đúng các điều luật từ văn bản pháp luật đính kèm, đảm bảo chính xác tên điều và nội dung điều.
 
-Chỉ xuất ra một JSON object, không thêm bất kỳ chú thích hay văn bản nào khác. Nhắc lại vô cùng quan trọng là câu hỏi phải dựa vào các điều luật trong văn bản đính kèm.
+Chỉ xuất ra một JSON object, không thêm bất kỳ chú thích hay văn bản nào khác. Nhắc lại vô cùng quan trọng là câu hỏi phải dựa vào các điều luật trong văn bản đính kèm. Chỉ tạo ra 1 câu hỏi mới.
 {DOCUMENT}
 """
 
@@ -40,33 +42,29 @@ def load_random_reference(folder_path):
         return f.read()
 
 def generate(seed_problem, reference_document):
-    prompt = PROMPT.format(
-        JSON=json.dumps(seed_problem, ensure_ascii=False, indent=2),
-        DOCUMENT=reference_document
+    prompt = PROMPT.format(JSON=json.dumps(seed_problem, ensure_ascii=False, indent=2), DOCUMENT=reference_document)
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        config=types.GenerateContentConfig(system_instruction="Bạn là chuyên gia pháp luật."),
+        contents=prompt
     )
-
-    response = client.chat.completions.create(
-        model="gpt-4.1-nano",
-        messages=[
-            {"role": "system", "content": "Bạn là chuyên gia pháp luật."},
-            {"role": "user", "content": prompt},
-        ],
-        temperature=0.7,
-        max_tokens=1024,
-    )
-    return response.choices[0].message.content.strip()
+    text = response.text
+    match = re.search(r'\{.*\}', text, re.DOTALL)
+    if not match:
+        raise ValueError("No JSON object found")
+    return json.loads(match.group(0))
 
 
 seed = load_random_seed('src/seed_files')
 reference_doc = load_random_reference('src/reference')
 new_example = generate(seed, reference_doc)
 
-# print(seed)
-
-try:
-    new_example_json = json.loads(new_example)
-except json.JSONDecodeError:
-    print("Invalid JSON", new_example)
-
 with open('ex.json', 'w', encoding='utf-8') as f:
-    json.dump(new_example_json, f, ensure_ascii=False, indent=2)
+    json.dump(new_example, f, ensure_ascii=False, indent=2)
+
+print('DONE')
+
+
+'''
+/Users/nguyenphuan/Documents/Github/VLSP-2025/venv/bin/python /Users/nguyenphuan/Documents/Github/VLSP-2025/src/generate.py
+'''
