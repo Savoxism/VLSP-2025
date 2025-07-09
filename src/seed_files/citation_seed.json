@@ -1,7 +1,7 @@
 [
     {
         "id": 1,
-        "instruction": "Xác định giá trị trích dẫn: Hãy trả lời \"True\" nếu Điều 615 BLDS 2015 là trích dẫn cần thiết và hữu ích để trả lời câu hỏi dưới đây; trả lời \"False\" nếu không cần dùng trích dẫn này.",
+        "instruction": "Dạng câu hỏi xác định giá trị của văn bản pháp luật: Hãy trả lời 'True' nếu văn bản pháp luật là trích dẫn cần thiết và hữu ích để trả lời câu hỏi dưới đây; trả lời 'False' nếu không cần dùng trích dẫn này.",
         "question": "Sau 2 năm đi làm ăn xa, anh Độ trở về quê thì được biết tin anh Mạnh đã mất cách đây hơn 1 năm. Anh Độ cho biết, trước khi đi làm, anh Độ đã cho anh Mạnh vay 20 triệu đồng bằng hợp đồng viết tay và có người làm chứng. Anh Độ muốn khởi kiện yêu cầu những người thừa kế của anh Mạnh phải trả khoản nợ 20 triệu đồng mà anh Mạnh đã vay trước khi mất. Hỏi rằng dựa trên Điều 615: Thực hiện nghĩa vụ tài sản do người chết để lại, Bộ Luật Dân sự 2015, thì anh Độ có quyền khởi kiện yêu cầu những người thừa kế của anh Mạnh phải trả khoản nợ 20 triệu đồng hay không?",
         "answer": "True",
         "references": {
@@ -11,7 +11,7 @@
     },
     {
         "id": 2,
-        "instruction": "Xác định giá trị trích dẫn: Hãy trả lời \"True\" nếu Điều 24 BLDS 2015 là trích dẫn cần thiết và hữu ích để trả lời câu hỏi dưới đây; trả lời \"False\" nếu không cần dùng trích dẫn này.",
+        "instruction": "Dạng câu hỏi xác định giá trị của văn bản pháp luật: Hãy trả lời 'True' nếu văn bản pháp luật là trích dẫn cần thiết và hữu ích để trả lời câu hỏi dưới đây; trả lời 'False' nếu không cần dùng trích dẫn này.",
         "question": "H là người nghiện ma túy lâu năm, mỗi khi không có tiền mua ma túy, H thường mang tài sản của gia đình đi bán. Hỏi rằng, dựa trên Điều 24: Hạn chế năng lực hành vi dân sự, Bộ Luật Dân sự 2015, Tòa án có thể tuyên bố H là người bị hạn chế năng lực hành vi dân sự hay không?",
         "answer": "True",
         "references": {
@@ -21,7 +21,7 @@
     },
     {
         "id": 3,
-        "instruction": "Xác định giá trị trích dẫn: Hãy trả lời \"True\" nếu Điều 584 BLDS 2015 là trích dẫn cần thiết và hữu ích để trả lời câu hỏi dưới đây; trả lời \"False\" nếu không cần dùng trích dẫn này.",
+        "instruction": "Dạng câu hỏi xác định giá trị của văn bản pháp luật: Hãy trả lời 'True' nếu văn bản pháp luật là trích dẫn cần thiết và hữu ích để trả lời câu hỏi dưới đây; trả lời 'False' nếu không cần dùng trích dẫn này.",
         "question": "Trưa ngày 10/11/2017 tôi đang lái xe ô tô đi đúng phần đường, làn đường và tốc độ theo quy định thì có một người đàn ông khoảng 40 tuổi chạy sang đường, do không để ý nên anh ta đã bị va vào sườn xe, phải đưa đi viện cấp cứu. Hiện người đàn ông này đã qua cơn nguy kịch và ăn uống bình thường. Nay, gia đình người đàn ông này đòi tôi phải bồi thường toàn bộ chi phí chữa bệnh và khoản tiền bù đắp tổn thất tinh thần cho anh ta. Hỏi rằng, dựa trên Điều 584: Căn cứ phát sinh trách nhiệm bồi thường thiệt hại, Bộ Luật Dân sự 2015, gia đình người đàn ông có quyền yêu cầu tôi bồi thường hay không?",
         "answer": "True",
         "references": {

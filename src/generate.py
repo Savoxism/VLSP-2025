@@ -1,122 +1,72 @@
-"""
-Generate initial legal QA data by utilizing seed questions from seed.json and legal knowledge from the reference directory.
-Uses Claude 4.0 from Amazon Bedrock API.
-
-python src/generate.py --nums 5 --cores 1 --suffix test
-"""
-import json
-import argparse
-import os
-import tqdm
-import multiprocessing
-import time
+import os, json, random
 from dotenv import load_dotenv
 from openai import OpenAI
 
 load_dotenv()
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-parser = argparse.ArgumentParser()
-parser.add_argument('--cores',   default=16, type=int)
-parser.add_argument('--nums',    default=1, type=int)
-parser.add_argument('--suffix',  default=None, type=str)
-args = parser.parse_args()
-
-CONTROL = """
-Bạn được cung cấp một câu hỏi và đáp án về lĩnh vực pháp luật ở định dạng JSON. Trường instruction hướng dẫn cách trả lời, trường question chứa câu hỏi, trường answer chứa đáp án.
-
+PROMPT = """
+Bạn là chuyên gia pháp luật. Tôi sẽ đưa cho bạn:  
+1) Một ví dụ vấn đề mẫu ở định dạng JSON, gồm các trường:  
+   - id  
+   - instruction (str): dạng câu hỏi 
+   - question (str): nội dung câu hỏi  
+   - answer (str): đáp án  
+   - references (dict): các điều luật liên quan và nội dung của chúng  
+   - reasoning_path (str): chuỗi mô tả quá trình suy luận  
 {JSON}
 
-Bây giờ, dựa trên dữ liệu văn bản pháp luật, bạn muốn tạo câu hỏi tương tự. Hãy trả lời dưới dạng JSON với trường type là "hình sự" hoặc "dân sự".
+2) Một văn bản pháp luật để trích dẫn. Bạn có nhiệm vụ tạo ra MỘT câu hỏi mới dưới dạng JSON, bao gồm toàn bộ các trường như mẫu. Đảm bảo rằng:
+- id luôn để -1
+- `instruction` giữ nguyên
+- Nội dụng `question` & `answer` phải đa dạng và khác biệt so với mẫu
+- Trường `references` BẮT BUỘC trích đúng các điều luật từ văn bản pháp luật đính kèm, đảm bảo chính xác tên điều và nội dung điều.
+
+Chỉ xuất ra một JSON object, không thêm bất kỳ chú thích hay văn bản nào khác. Nhắc lại vô cùng quan trọng là câu hỏi phải dựa vào các điều luật trong văn bản đính kèm.
+{DOCUMENT}
 """
 
-GENERATE = """
-Bạn được cung cấp một câu hỏi và đáp án về lĩnh vực pháp luật ở định dạng JSON. Trường instruction hướng dẫn cách trả lời, trường question chứa câu hỏi, trường answer chứa đáp án.
+def load_random_seed(folder_path):
+    files = [f for f in os.listdir(folder_path) if f.endswith('.json')]
+    selected = random.choice(files)
+    with open(os.path.join(folder_path, selected), 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    return random.choice(data) if isinstance(data, list) else data
 
-{JSON}
+def load_random_reference(folder_path):
+    files = [f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))]
+    selected = random.choice(files)
+    with open(os.path.join(folder_path, selected), 'r', encoding='utf-8') as f:
+        return f.read()
 
-Dưới đây là nội dung một văn bản pháp luật. Hãy dựa vào đó, giữ nguyên instruction, tạo một câu hỏi và đáp án mới theo định dạng JSON tương tự.
-Thêm trường reasoning (giải thích quá trình suy luận ra đáp án) và trường reference (từ điển các điều luật liên quan).
-Hãy thay đổi tên riêng, địa danh, doanh nghiệp để đảm bảo ẩn danh. Không lặp lại nguyên văn nội dung văn bản.
-Đáp án phải đúng định dạng như instruction yêu cầu.
-
-{DOCS}
-"""
-
-def generate(prompt):
-    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-    messages = [
-        {"role": "system", "content": "Bạn là chuyên gia pháp luật."},
-        {"role": "user", "content": prompt},
-    ]
+def generate(seed_problem, reference_document):
+    prompt = PROMPT.format(
+        JSON=json.dumps(seed_problem, ensure_ascii=False, indent=2),
+        DOCUMENT=reference_document
+    )
 
     response = client.chat.completions.create(
         model="gpt-4.1-nano",
-        messages=messages,
+        messages=[
+            {"role": "system", "content": "Bạn là chuyên gia pháp luật."},
+            {"role": "user", "content": prompt},
+        ],
         temperature=0.7,
         max_tokens=1024,
     )
     return response.choices[0].message.content.strip()
 
-    
-def tojson(reply):
-    reply = reply.strip()
-    if reply.startswith("```json"):
-        reply = reply[7:]
-    if reply.endswith("```"):
-        reply = reply[:-3]
-    return json.loads(reply.strip())
 
-def solve(seed):
-    try:
-        ctrl = CONTROL.format(JSON=json.dumps(seed, ensure_ascii=False, indent=4))
-        typ_json = generate(ctrl)
-        typ = tojson(typ_json).get("type", "")
-        # Đọc nội dung từ 0.txt
-        with open("src/reference/0.txt", "r") as fr:
-            doc = fr.read()
-        if not doc.strip():
-            return None
+seed = load_random_seed('src/seed_files')
+reference_doc = load_random_reference('src/reference')
+new_example = generate(seed, reference_doc)
 
-        gene = GENERATE.format(JSON=json.dumps(seed, ensure_ascii=False, indent=4), DOCS=doc)
-        res_json = generate(gene)
-        res = tojson(res_json)
-        res["type"] = typ
-        res["reference_file"] = "0.txt"
-        return res
-    except Exception as e:
-        print("Error in solve:", e)
-        return None
-    
-if __name__ == "__main__":
-    with open(f"src/seed.json", "r") as fr:
-        problems = json.load(fr)
+# print(seed)
 
-    n = len(problems)
-    print("#Seed Questions = ", n)
+try:
+    new_example_json = json.loads(new_example)
+except json.JSONDecodeError:
+    print("Invalid JSON", new_example)
 
-    inputs = []
-    for i in range(args.nums):
-        inputs.append(problems[i % n])
-
-    start_time = time.time()
-    with multiprocessing.Pool(processes=args.cores) as pool:
-        res = pool.map(solve, inputs)
-
-    results = []
-    path = f"data/GEN{'-' + args.suffix if args.suffix is not None else ''}.json"
-    try:
-        with open(path, "r") as fr:
-            results = json.load(fr)
-    except Exception:
-        pass
-
-    oks = 0
-    for item in res:
-        if item is None:
-            continue
-        results.append(item)
-        oks += 1
-    print(f"Time: {time.time() - start_time:.2f}s", f"OK: {oks}/{len(inputs)}")
-
-    with open(path, "w") as fw:
-        json.dump(results, fw, ensure_ascii=False, indent=4)
+with open('ex.json', 'w', encoding='utf-8') as f:
+    json.dump(new_example_json, f, ensure_ascii=False, indent=2)

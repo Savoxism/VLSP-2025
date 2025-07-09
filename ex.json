@@ -1,0 +1,10 @@
+{
+  "id": -1,
+  "instruction": "Dạng câu hỏi trắc nghiệm: Chọn đáp án đúng nhất (A, B, C, hoặc D)",
+  "question": "Theo quy định của Luật Điện lực số 61 / 2024 /QH15, việc cấp giấy phép hoạt động điện lực cho tổ chức phải đáp ứng các điều kiện nào sau đây?\nA. Được thành lập hợp pháp, có đội ngũ quản lý phù hợp kỹ thuật và có giấy phép hành nghề.\nB. Có đủ các hạng mục công trình phù hợp quy hoạch, có dự án, công trình phát điện hoặc truyền tải đáp ứng tiêu chuẩn an toàn, và có đội ngũ quản lý phù hợp.\nC. Có vốn điều lệ tối thiểu 10 tỷ đồng, có giấy chứng nhận đủ điều kiện phòng cháy chữa cháy.\nD. Có hợp đồng hợp tác với tổ chức nước ngoài, và đã được phê duyệt bởi Bộ trưởng Bộ Công Thương.",
+  "answer": "B",
+  "references": {
+    "Điều 31 Luật Điện lực 2024": "Điều 31. Điều kiện cấp giấy phép hoạt động điện lực 1. Tổ chức được cấp giấy phép hoạt động điện lực phải đáp ứng đủ các điều kiện sau đây: a) Được thành lập hợp pháp theo quy định của pháp luật; b) Có đội ngũ quản lý kỹ thuật, quản lý kinh doanh và đội ngũ trực tiếp tham gia công tác vận hành đáp ứng về số lượng và điều kiện chuyên môn, nghiệp vụ."
+  },
+  "reasoning_path": "Bước 1: Xác định nội dung điều kiện cấp phép theo quy định tại Điều 31 Luật Điện lực 2024.\nBước 2: Điều kiện bao gồm các yêu cầu về thành lập hợp pháp và có đội ngũ quản lý phù hợp.\nBước 3: Các lựa chọn khác như A, C, D không chính xác hoặc không đủ căn cứ trong luật.\nBước 4: Do đó, đáp án đúng là B."
+}

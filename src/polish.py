@@ -34,7 +34,7 @@ You are given a legal question and answer in JSON format. The 'instruction' fiel
 {JSON}
 
 The reasoning process and answer may have issues. Please improve the reasoning and answer based on the question and legal articles.
-If the reasoning and answer are already correct, just return the original JSON. Otherwise, modify the 'reasoning' and 'answer' fields and return the updated JSON only, with no extra explanation.
+If the reasoning and answer are already correct, just return the original JSON. Otherwise, modify the 'reasoning_path' and 'answer' fields and return the updated JSON only, with no extra explanation.
 """
 
 def generate(prompt):

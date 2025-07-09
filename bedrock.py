@@ -1,41 +1,47 @@
+import os
 import json
 import boto3
-from botocore.exceptions import ClientError
-from dotenv import load_dotenv
 import logging
+from dotenv import load_dotenv
 
 load_dotenv()
-bedrock = boto3.client("bedrock-runtime", region_name="ap-southeast-1")
+bedrock = boto3.client("bedrock-runtime", region_name="us-east-1")
 
-def generate_text_embeddings(model_id: str, texts: list[str], input_type: str = "search_document"):
+def generate_text(
+    model_id: str,
+    prompt: str,
+    max_tokens: int = 512,
+    temperature: float = 0.7
+) -> str:
+    # Chuẩn bị payload cho text generation
     body = json.dumps({
-        "texts": texts,
-        "input_type": input_type,
-        # "truncate": "NONE",
-        # "embedding_types": ["float"]
+        "prompt": f"\n\nHuman: {prompt}\n\nAssistant:",
+        "max_tokens_to_sample": max_tokens,
+        "temperature": temperature
     })
-
     try:
+        # Gọi API
         response = bedrock.invoke_model(
-            modelId = model_id,
+            modelId=model_id,
             body=body,
             contentType="application/json",
-            accept="*/*"
+            accept="application/json"
         )
-
-        return json.loads(response["body"].read())
-    except ClientError as e:
-        logging.error("Error when calling Cohere Embed: %s", e.response["Error"]["Message"])
+        # Đọc và parse kết quả
+        model_response = json.loads(response["body"].read())
+        # Lấy chuỗi sinh ra
+        return model_response["results"][0]["outputText"]
+    except Exception as e:
+        logging.error("Error when generating text: %s", e)
         raise
 
-
-model_id = "cohere.embed-english-v4"  # Or "cohere.embed-multilingual-v3"
-texts = [
-    "Hello world",
-]
-
-result = generate_text_embeddings(model_id, texts, input_type="search_document")
-print("ID response:", result["id"])
-print("Embedding vectors:")
-for idx, vec in enumerate(result["embeddings"]):
-    print(f" - Text {idx}: vector length {len(vec)}")
+if __name__ == "__main__":
+    model_id = "us.anthropic.claude-sonnet-4-20250514-v1:0"
+    prompt = "Viết một đoạn văn ngắn giới thiệu về AI và ứng dụng của nó trong y tế."
+    text = generate_text(
+        model_id=model_id,
+        prompt=prompt,
+        max_tokens=256,
+        temperature=0.5
+    )
+    print("Generated text:\n", text)
