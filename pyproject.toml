@@ -8,6 +8,7 @@ dependencies = [
     "argparse>=1.4.0",
     "boto3>=1.39.4",
     "google-genai>=1.25.0",
+    "openai>=1.93.3",
     "python-dotenv>=1.1.1",
     "tqdm>=4.67.1",
 ]
