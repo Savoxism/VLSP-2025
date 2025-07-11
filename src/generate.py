@@ -1,62 +1,57 @@
-import json
-import os
-import random
-import re
-
+import os, json, re
+from tqdm import tqdm
 from dotenv import load_dotenv
+from google import genai
+from google.genai import types
+from prompt import *
+from helper import load_seed, load_random_reference, save_json_file
 
-from llm import gemini
-from prompt import GENQA_PROMPT
+load_dotenv()
 
-_ = load_dotenv()
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
+def generate(seed_problem, reference_document):
+    prompt = RAW_PROMPT.format(JSON=json.dumps(seed_problem, ensure_ascii=False, indent=2), DOCUMENT=reference_document)
 
-def load_random_seed(folder_path: str):
-    files = [
-        os.path.join(folder_path, f)
-        for f in os.listdir(folder_path)
-        if f.endswith(".json") and os.path.isfile(os.path.join(folder_path, f))
-    ]
-    if not files:
-        raise FileNotFoundError(f"No JSON files found in {folder_path}")
-    selected_file = random.choice(files)
-    with open(selected_file, "r", encoding="utf-8") as f:
-        data: dict | list = json.load(f)
-    if not data:
-        raise ValueError(f"The file {selected_file} is empty or invalid")
-    return random.choice(data) if isinstance(data, list) else data
-
-
-def load_random_reference(folder_path: str):
-    files = [
-        f
-        for f in os.listdir(folder_path)
-        if os.path.isfile(os.path.join(folder_path, f))
-    ]
-    selected = random.choice(files)
-    with open(os.path.join(folder_path, selected), "r", encoding="utf-8") as f:
-        return f.read()
+    try:
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            config=types.GenerateContentConfig(system_instruction="Bạn là chuyên gia pháp luật."),
+            contents=prompt
+        )
+        text = response.text    
+        match = re.search(r'\{.*\}', text, re.DOTALL)
+        if not match:
+            print("Warning: No JSON object found in response")
+            return None
+        
+        return json.loads(match.group(0))
+    except Exception as e:
+        print(f"Error generating content: {e}")
+        return None
 
 
-def generate(seed_problem: dict, reference_document: str):
-    prompt = GENQA_PROMPT.format(
-        JSON=json.dumps(seed_problem, ensure_ascii=False, indent=2),
-        DOCUMENT=reference_document,
-    )
+num_examples = 20
+seed_folder = "src/seed_files"
+reference_folder = "src/reference_files"
+output_file = "generated/train.json"
 
-    response = gemini.generate(prompt)
+new_examples = []
 
-    match = re.search(r"\{.*\}", response, re.DOTALL)
-    if not match:
-        raise ValueError("No JSON object found")
-    return json.loads(match.group(0))
+for i in tqdm(range(num_examples), desc="Generating examples"):
+    seed = load_seed(seed_folder)
+    reference_doc = load_random_reference(reference_folder)
+
+    example = generate(seed, reference_doc)
+
+    if example:
+        new_examples.append(example)
+        # with open(f'ex_{i+1}.json', 'w', encoding='utf-8') as f:
+        #         json.dump(example, f, ensure_ascii=False, indent=2)
 
 
-seed = load_random_seed("src/seed_files")
-reference_doc = load_random_reference("src/reference")
-new_example = generate(seed, reference_doc)
-
-with open("ex.json", "w", encoding="utf-8") as f:
-    json.dump(new_example, f, ensure_ascii=False, indent=2)
-
-print("DONE")
+if new_examples:
+    save_json_file(new_examples, output_file)
+    print(f"Successfully generated {len(new_examples)} examples")
+else:
+    print("No examples were successfully generated")
