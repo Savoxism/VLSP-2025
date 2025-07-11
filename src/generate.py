@@ -31,7 +31,7 @@ def generate(seed_problem, reference_document):
         return None
 
 
-num_examples = 20
+num_examples = 10
 seed_folder = "src/seed_files"
 reference_folder = "src/reference_files"
 output_file = "generated/train.json"

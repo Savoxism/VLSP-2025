@@ -11,7 +11,7 @@ Bạn là chuyên gia pháp luật. Tôi sẽ đưa cho bạn:
 {JSON}
 
 2) Một văn bản pháp luật để trích dẫn. Bạn có nhiệm vụ tạo ra MỘT câu hỏi mới dưới dạng JSON, bao gồm toàn bộ các trường như mẫu. Đảm bảo rằng:  
-- id bắt đầu từ 1 và tăng dần 
+- id luôn để -1
 - `instruction` giữ nguyên  
 - Loại câu hỏi **trắc nghiệm 4 phương án** (A, B, C hoặc D):  
   + Trong trường `question`, phải liệt kê rõ 4 lựa chọn A, B, C và D.  
