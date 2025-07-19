@@ -1,51 +1,92 @@
-# gemini 2.5 flash lite 
-RAW_PROMPT = """
-Bạn là chuyên gia pháp luật. Tôi sẽ đưa cho bạn:  
-1) Một ví dụ vấn đề mẫu ở định dạng JSON, gồm các trường:  
-   - id  
-   - instruction (str): dạng câu hỏi  
-   - question (str): nội dung câu hỏi  
-   - answer (str): đáp án  
-   - references (dict): các điều luật liên quan và nội dung của chúng  
-   - reasoning_path (str): chuỗi mô tả quá trình suy luận  
+GENERATE_PROMPT = """
+[BỐI CẢNH]
+{CONTEXT}
+
+[HƯỚNG DẪN]
+Bạn là chuyên gia pháp luật. Thực hiện hai nhiệm vụ:
+
+Bước 1 – Tạo câu hỏi  
+• Viết một câu hỏi tình huống thực tiễn xoay quanh bối cảnh trên, yêu cầu người trả lời phải phân tích và kết luận theo quy định pháp luật.
+
+Bước 2 – Trả lời theo cấu trúc pháp lý. Dựa vào Câu hỏi cùng với bối cảnh, hãy xây dựng bài trả lời gồm bốn phần bắt buộc:
+  1. Tiền đề lớn: Trích dẫn chính xác điều, khoản, điểm, tên văn bản (luật/nghị định/thông tư) điều chỉnh tình huống.
+  2. Tiền đề nhỏ: Tóm tắt ngắn gọn các chi tiết then chốt của tình huống liên quan tới Tiền đề lớn.
+  3. Kết luận: Khẳng định cuối cùng về quyền/nghĩa vụ hoặc hậu quả pháp lý.
+  4. Giải thích: Phân tích vì sao điều kiện của tình huống đủ hoặc chưa đủ để phát sinh quyền lợi/hậu quả theo luật. Nêu rõ mọi yếu tố bổ sung có thể làm thay đổi kết quả.
+
+[ĐỊNH DẠNG ĐẦU RA]
+Xuất ra một JSON với 7 trường sau:
+  id: -1
+
+  verification_status: "unchecked"
+
+  câu_hỏi: <Câu hỏi bạn vừa tạo>  
+
+  tiền_đề_lớn: <Điều … khoản …, Luật/ Nghị định …>  
+
+  tiền_đề_nhỏ: <Tóm tắt tình huống>  
+
+  kết_luận: <Kết luận hợp pháp>  
+
+  giải_thích: <Phân tích chi tiết theo luật và tình huống>  
+
+
+Bạn chỉ trả về CHÍNH XÁC một object JSON, KHÔNG kèm text nào khác.
+
+[MẪU]
+Dưới đây là một mẫu để tham khảo:
+{JSON}
+"""
+
+VERIFICATION_PROMPT = """
+[HƯỚNG DẪN]
+Bạn là chuyên gia pháp luật. Kiểm tra tính nhất quán logic giữa kết luận và các thành phần khác trong câu hỏi pháp lý được cung cấp.
+
+[DỮ LIỆU ĐẦU VÀO]
 {JSON}
 
-2) Một văn bản pháp luật để trích dẫn. Bạn có nhiệm vụ tạo ra MỘT câu hỏi mới dưới dạng JSON, bao gồm toàn bộ các trường như mẫu. Đảm bảo rằng:  
-- id luôn để -1
-- `instruction` giữ nguyên  
-- Loại câu hỏi **trắc nghiệm 4 phương án** (A, B, C hoặc D):  
-  + Trong trường `question`, phải liệt kê rõ 4 lựa chọn A, B, C và D.  
-  + Trường `answer` chỉ chứa **một** trong các giá trị `"A"`, `"B"`, `"C"` hoặc `"D"`.  
-- Nội dung `question` & `answer` phải đa dạng và khác biệt so với mẫu.  
-- Trường `references` BẮT BUỘC trích đúng các điều luật từ văn bản pháp luật đính kèm, đảm bảo chính xác tên điều và nội dung điều.  
+[HƯỚNG DẪN]
+Hãy phân tích câu hỏi pháp lý và kiểm tra xem "kết_luận" có thể được suy ra một cách hợp lý từ các thành phần sau hay không:
+1. câu_hỏi (nêu vấn đề pháp lý)
+2. tiền_đề_lớn (căn cứ pháp lý, điều luật)
+3. tiền_đề_nhỏ (tóm tắt tình huống)
+4. giải_thích (phân tích chi tiết)
 
-Chỉ xuất ra một JSON object hợp lệ, không thêm bất kỳ chú thích hay văn bản nào khác. Nhắc lại vô cùng quan trọng là câu hỏi phải dựa vào các điều luật trong văn bản đính kèm. Chỉ tạo ra 1 câu hỏi mới.
-{DOCUMENT}
+Tiêu chí đánh giá:
+- Kết luận phải phù hợp với nội dung của câu hỏi
+- Kết luận phải dựa trên các căn cứ pháp lý được nêu trong tiền đề lớn
+- Kết luận phải áp dụng đúng pháp luật vào tình huống cụ thể trong tiền đề nhỏ
+- Kết luận phải được hỗ trợ bởi phần giải thích
+
+[ĐỊNH DẠNG ĐẦU RA]
+Trả về JSON với cấu trúc đầy đủ như dữ liệu đầu vào, trong đó:
+
+1. Nếu kết luận hợp lý và nhất quán:
+   {{
+     "verification_status": "pass",
+     ... (giữ nguyên tất cả các trường từ dữ liệu đầu vào)
+   }}
+
+2. Nếu kết luận cần sửa:
+   {{
+     "id": -1,
+     "verification_status": "fixed",
+     "câu_hỏi": "...",
+     "tiền_đề_lớn": "...",
+     "tiền_đề_nhỏ": "...",
+     "kết_luận": "... (kết luận đã được sửa) ...",
+     "giải_thích": "... (giải thích đã được điều chỉnh nếu cần) ..."
+   }}
+
+3. Nếu có vấn đề nghiêm trọng về logic hoặc nội dung:
+   {{
+     "verification_status": "error",
+     "error_message": "... (mô tả vấn đề) ...",
+     ... (giữ nguyên các trường gốc)
+   }}
+
+Hãy trả về CHÍNH XÁC một JSON object duy nhất.
 """
 
-REFINEMENT_PROMPT = """
-Bạn là chuyên gia pháp luật có nhiệm vụ chuẩn hóa câu hỏi trắc nghiệm. Tôi sẽ cung cấp một câu hỏi pháp luật ở định dạng JSON. Câu hỏi này chưa đúng format - cụ thể là chưa liệt kê rõ 4 phương án trả lời A, B, C, D.
 
-Hãy giúp tôi:
-1) Dựa vào phần references (điều luật) đã được cung cấp trong JSON để tạo ra 4 phương án trả lời rõ ràng (A, B, C, D)
-2) Chỉ định MỘT đáp án đúng duy nhất
-3) Đảm bảo các đáp án sai phải hợp lý và có tính phân biệt
-4) Trả về cấu trúc JSON đầy đủ, giữ nguyên tất cả các trường khác
 
-Các quy tắc:
-- Phần question phải bắt đầu với câu hỏi gốc và sau đó liệt kê 4 lựa chọn A, B, C, D được đánh dấu rõ ràng
-- Trường answer chỉ chứa một trong các giá trị: "A", "B", "C" hoặc "D"
-- Các đáp án phải liên quan trực tiếp đến nội dung trong phần references
-- Đáp án đúng phải phù hợp với nội dung của references
-- Thay đổi trường `reasoning_path` để phản ánh quá trình suy luận mới
-
-Dưới đây là câu hỏi cần chuẩn hóa:
-{JSON}
-
-Chỉ trả về một JSON object hợp lệ đã được chuẩn hóa, không thêm bất kỳ chú thích hay văn bản nào khác.
-"""
-
-# gemini 2.5 flash - 
-VALIDATION_PROMPT = """
-
-"""

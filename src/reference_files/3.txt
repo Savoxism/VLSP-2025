@@ -1,0 +1,26 @@
+Hệ thống thông tin về giám sát, đánh giá đầu tư được quy định tại khoản 1 Điều 101 Nghị định 29/2021/NĐ-CP như sau:
+Hệ thống thông tin về giám sát, đánh giá đầu tư
+1. “Hệ thống thông tin về giám sát, đánh giá đầu tư” (sau đây gọi tắt là Hệ thống) là hệ thống được triển khai trên toàn quốc, tập trung tại Bộ Kế hoạch và Đầu tư để cập nhật, lưu trữ thông tin, giám sát, đánh giá, phân tích, công khai thông tin theo quy định về các chương trình, dự án đầu tư trên toàn quốc.
+2. Các quy định sử dụng chung:
+a) Việc theo dõi, giám sát, đánh giá các dự án đầu tư phải thực hiện trên Hệ thống; báo cáo trên Hệ thống sẽ thay thế cho báo cáo bằng văn bản giấy;
+b) Với báo cáo giám sát, đánh giá tổng thể đầu tư trên toàn quốc hàng năm, Bộ Kế hoạch và Đầu tư chỉ tổng hợp trên số liệu các cơ quan báo cáo trên Hệ thống;
+c) Việc cập nhật dữ liệu báo cáo phải bảo đảm đầy đủ, chính xác và kịp thời. Các cơ quan, tổ chức, cá nhân chịu trách nhiệm về tính chính xác của số liệu do cơ quan báo cáo, cập nhật trên Hệ thống;
+Việc sử dụng Hệ thống thông tin về giám sát, đánh giá đầu tư được quy định tại khoản 2 Điều 101 Nghị định 29/2021/NĐ-CP như sau:
+Hệ thống thông tin về giám sát, đánh giá đầu tư
+2. Các quy định sử dụng chung:
+a) Việc theo dõi, giám sát, đánh giá các dự án đầu tư phải thực hiện trên Hệ thống; báo cáo trên Hệ thống sẽ thay thế cho báo cáo bằng văn bản giấy;
+b) Với báo cáo giám sát, đánh giá tổng thể đầu tư trên toàn quốc hàng năm, Bộ Kế hoạch và Đầu tư chỉ tổng hợp trên số liệu các cơ quan báo cáo trên Hệ thống;
+c) Việc cập nhật dữ liệu báo cáo phải bảo đảm đầy đủ, chính xác và kịp thời. Các cơ quan, tổ chức, cá nhân chịu trách nhiệm về tính chính xác của số liệu do cơ quan báo cáo, cập nhật trên Hệ thống;
+d) Tổ chức, cá nhân sử dụng Hệ thống phải sử dụng chữ ký số chuyên dùng Chính phủ trong việc ký gửi báo cáo trên Hệ thống;
+d) Biểu mẫu thực hiện chế độ báo cáo giám sát, đánh giá đầu tư được điện tử hóa trên Hệ thống và các biểu mẫu này được Bộ Kế hoạch và Đầu tư xây dựng và công khai tại cảng thông tin quốc gia về giám sát, đánh giá đầu tư;
+e) Quy định tại Điều này không áp dụng đối với các dự án có yêu cầu bí mật Nhà nước.
+Thẩm quyền cấp tài khoản sử dụng Hệ thống thông tin về giám sát, đánh giá đầu tư được quy định tại khoản 3 Điều 101 Nghị định 29/2021/NĐ-CP như sau:
+Hệ thống thông tin về giám sát, đánh giá đầu tư
+3. Quy định về tài khoản sử dụng Hệ thống:
+a) Tài khoản sử dụng được quản lý tập trung trên Hệ thống do Bộ Kế hoạch và Đầu tư xây dựng.
+b) Tổ chức, cá nhân tham gia hoặc có liên quan đến hoạt động giám sát, đánh giá đầu tư được đăng ký tài khoản sử dụng Hệ thống. Bộ Kế hoạch và Đầu tư thực hiện cấp tài khoản dựa trên thông tin đăng ký và chức năng, nhiệm vụ của tổ chức, cá nhân tham gia Hệ thống.
+c) Việc đăng ký tài khoản được thực hiện trực tuyến trên Hệ thống tại địa chỉ https://taikhoan.mpi.gov.vn. Thông tin bắt buộc phải cập nhật khi đăng ký tài khoản bao gồm:
+- Thông tin của người được giao quản lý sử dụng tài khoản: Họ và tên; số chứng minh nhân dân/số thẻ căn cước công dân; số điện thoại di động; thư điện tử;
+- Thông tin của cơ quan sử dụng tài khoản; Tên cơ quan; thông tin của người đứng đầu cơ quan: Họ và tên, số chứng minh nhân dân/số thẻ căn cước công dân, số điện thoại di động, thư điện tử; bản chụp quyết định thành lập cơ quan.
+d) Tài khoản chính của bộ, cơ quan trung ương và địa phương được sử dụng để xác thực thông tin đăng ký tài khoản của các cơ quan quản lý, chủ đầu tư, ban quản lý dự án thuộc cơ quan mình.
+đ) Người sử dụng phải đổi mật khẩu ban đầu trong vòng 01 ngày kể từ khi nhận được tài khoản. Không tiết lộ mật khẩu cho người khác không có trách nhiệm cập nhật trên Hệ thống. Trường hợp thay đổi người sử dụng tài khoản, người tiếp nhận bàn giao tài khoản phải đổi lại mật khẩu và thay đổi thông tin người quản lý, sử dụng tài khoản trên Hệ thống.

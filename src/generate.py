@@ -8,49 +8,55 @@ from helper import load_seed, load_random_reference, save_json_file
 
 load_dotenv()
 
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+API_KEY = "AIzaSyBG7Rd4avKco5WkAR_11VSP6jTEMAz8UdM"
+
+client = genai.Client(api_key=API_KEY)
 
 def generate(seed_problem, reference_document):
-    prompt = RAW_PROMPT.format(JSON=json.dumps(seed_problem, ensure_ascii=False, indent=2), DOCUMENT=reference_document)
+    prompt = GENERATE_PROMPT.format(
+        JSON=json.dumps(seed_problem, ensure_ascii=False, indent=2),
+        CONTEXT=reference_document
+    )
+    contents = [
+        types.Content(
+            role="user",
+            parts=[types.Part.from_text(text=prompt)],
+        ),
+    ]
+    cfg = types.GenerateContentConfig(response_mime_type="text/plain")
+    stream = client.models.generate_content_stream(
+        model="gemma-3n-e4b-it",
+        contents=contents,
+        config=cfg,
+    )
+    text = ""
+    for chunk in tqdm(stream, desc="Generating response"):
+        text += chunk.text or ""
+    start = text.find("{")
+    end   = text.rfind("}")
+    if start < 0 or end < 0 or end <= start:
+        raise ValueError(f"JSON braces not found in\n{text}")
+    json_str = text[start : end+1]
+    return json.loads(json_str)
 
-    try:
-        response = client.models.generate_content(
-            model="gemini-2.5-flash", # gemini 2.5 flash preview, phải đặt thinking = False
-            config=types.GenerateContentConfig(system_instruction="Bạn là chuyên gia pháp luật."),
-            contents=prompt
-        )
-        text = response.text    
-        match = re.search(r'\{.*\}', text, re.DOTALL)
-        if not match:
-            print("Warning: No JSON object found in response")
-            return None
-        
-        return json.loads(match.group(0))
-    except Exception as e:
-        print(f"Error generating content: {e}")
-        return None
 
-
-num_examples = 10
-seed_folder = "src/seed_files"
+num_examples     = 5
+seed_folder      = "src/seed_files"
 reference_folder = "src/reference_files"
-output_file = "generated/train.json"
+output_file      = "generated/train.json"
 
 new_examples = []
-
-for i in tqdm(range(num_examples), desc="Generating examples"):
-    seed = load_seed(seed_folder)
+for _ in tqdm(range(num_examples), desc="Generating examples with gemma"):
+    seed          = load_seed(seed_folder)
     reference_doc = load_random_reference(reference_folder)
-
-    example = generate(seed, reference_doc)
-
-    if example:
+    try:
+        example = generate(seed, reference_doc)
         new_examples.append(example)
-        # with open(f'ex_{i+1}.json', 'w', encoding='utf-8') as f:
-        #         json.dump(example, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print("Failed to parse JSON from response:", e)
 
 if new_examples:
     save_json_file(new_examples, output_file)
-    print(f"Successfully generated {len(new_examples)} examples")
 else:
-    print("No examples were successfully generated")
+    print("No examples were successfully generated with gemma model")
+
