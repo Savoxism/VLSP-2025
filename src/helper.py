@@ -3,14 +3,6 @@ import json
 import random
 import time
 import shutil 
-
-def load_json_file(file_path):
-    try:
-        with open(file_path, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    except Exception as e:
-        print(f"Error loading JSON file: {e}")
-        return None
     
 def load_seed(folder_path):
     files = [f for f in os.listdir(folder_path) if f.endswith('.json')]

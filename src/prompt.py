@@ -39,53 +39,12 @@ Dưới đây là một mẫu để tham khảo:
 """
 
 VERIFICATION_PROMPT = """
-[HƯỚNG DẪN]
-Bạn là chuyên gia pháp luật. Kiểm tra tính nhất quán logic giữa kết luận và các thành phần khác trong câu hỏi pháp lý được cung cấp.
-
-[DỮ LIỆU ĐẦU VÀO]
+[HƯỚNG DẪN XÁC MINH]
+Bạn được cung cấp một object JSON sau:
 {JSON}
-
-[HƯỚNG DẪN]
-Hãy phân tích câu hỏi pháp lý và kiểm tra xem "kết_luận" có thể được suy ra một cách hợp lý từ các thành phần sau hay không:
-1. câu_hỏi (nêu vấn đề pháp lý)
-2. tiền_đề_lớn (căn cứ pháp lý, điều luật)
-3. tiền_đề_nhỏ (tóm tắt tình huống)
-4. giải_thích (phân tích chi tiết)
-
-Tiêu chí đánh giá:
-- Kết luận phải phù hợp với nội dung của câu hỏi
-- Kết luận phải dựa trên các căn cứ pháp lý được nêu trong tiền đề lớn
-- Kết luận phải áp dụng đúng pháp luật vào tình huống cụ thể trong tiền đề nhỏ
-- Kết luận phải được hỗ trợ bởi phần giải thích
-
-[ĐỊNH DẠNG ĐẦU RA]
-Trả về JSON với cấu trúc đầy đủ như dữ liệu đầu vào, trong đó:
-
-1. Nếu kết luận hợp lý và nhất quán:
-   {{
-     "verification_status": "pass",
-     ... (giữ nguyên tất cả các trường từ dữ liệu đầu vào)
-   }}
-
-2. Nếu kết luận cần sửa:
-   {{
-     "id": -1,
-     "verification_status": "fixed",
-     "câu_hỏi": "...",
-     "tiền_đề_lớn": "...",
-     "tiền_đề_nhỏ": "...",
-     "kết_luận": "... (kết luận đã được sửa) ...",
-     "giải_thích": "... (giải thích đã được điều chỉnh nếu cần) ..."
-   }}
-
-3. Nếu có vấn đề nghiêm trọng về logic hoặc nội dung:
-   {{
-     "verification_status": "error",
-     "error_message": "... (mô tả vấn đề) ...",
-     ... (giữ nguyên các trường gốc)
-   }}
-
-Hãy trả về CHÍNH XÁC một JSON object duy nhất.
+Hãy kiểm tra xem kết_luận có thể được suy ra hợp lệ từ câu_hỏi, tiền_đề_lớn, tiền_đề_nhỏ và giải_thích hay không.
+Nếu phù hợp, trường verification_status = "valid", ngược lại = "invalid".
+Các trường khác phải giữ nguyên.
 """
 
 
