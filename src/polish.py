@@ -9,7 +9,9 @@ from helper import load_json_file, save_json_file
 from prompt import REFINEMENT_PROMPT
 
 load_dotenv()
+
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+
 def check_format(question_text):
     option_patterns = [
         r'A[\.:\)\-\s].*B[\.:\)\-\s].*C[\.:\)\-\s].*D[\.:\)\-\s]',

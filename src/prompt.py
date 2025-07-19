@@ -1,4 +1,4 @@
-
+# gemini 2.5 flash lite 
 RAW_PROMPT = """
 Bạn là chuyên gia pháp luật. Tôi sẽ đưa cho bạn:  
 1) Một ví dụ vấn đề mẫu ở định dạng JSON, gồm các trường:  
@@ -23,7 +23,8 @@ Chỉ xuất ra một JSON object hợp lệ, không thêm bất kỳ chú thíc
 {DOCUMENT}
 """
 
-REFINEMENT_PROMPT = """Bạn là chuyên gia pháp luật có nhiệm vụ chuẩn hóa câu hỏi trắc nghiệm. Tôi sẽ cung cấp một câu hỏi pháp luật ở định dạng JSON. Câu hỏi này chưa đúng format - cụ thể là chưa liệt kê rõ 4 phương án trả lời A, B, C, D.
+REFINEMENT_PROMPT = """
+Bạn là chuyên gia pháp luật có nhiệm vụ chuẩn hóa câu hỏi trắc nghiệm. Tôi sẽ cung cấp một câu hỏi pháp luật ở định dạng JSON. Câu hỏi này chưa đúng format - cụ thể là chưa liệt kê rõ 4 phương án trả lời A, B, C, D.
 
 Hãy giúp tôi:
 1) Dựa vào phần references (điều luật) đã được cung cấp trong JSON để tạo ra 4 phương án trả lời rõ ràng (A, B, C, D)
@@ -42,4 +43,9 @@ Dưới đây là câu hỏi cần chuẩn hóa:
 {JSON}
 
 Chỉ trả về một JSON object hợp lệ đã được chuẩn hóa, không thêm bất kỳ chú thích hay văn bản nào khác.
+"""
+
+# gemini 2.5 flash - 
+VALIDATION_PROMPT = """
+
 """

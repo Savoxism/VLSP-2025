@@ -15,7 +15,7 @@ def generate(seed_problem, reference_document):
 
     try:
         response = client.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-2.5-flash", # gemini 2.5 flash preview, phải đặt thinking = False
             config=types.GenerateContentConfig(system_instruction="Bạn là chuyên gia pháp luật."),
             contents=prompt
         )
@@ -48,7 +48,6 @@ for i in tqdm(range(num_examples), desc="Generating examples"):
         new_examples.append(example)
         # with open(f'ex_{i+1}.json', 'w', encoding='utf-8') as f:
         #         json.dump(example, f, ensure_ascii=False, indent=2)
-
 
 if new_examples:
     save_json_file(new_examples, output_file)
